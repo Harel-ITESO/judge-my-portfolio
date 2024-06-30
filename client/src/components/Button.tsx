@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 interface Props {
   children?: JSX.Element | JSX.Element[] | string;
   type?: "main" | "secondary";
@@ -25,13 +27,12 @@ export default function Button({
       </button>
     );
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       type="button"
       className={`rounded-lg ${typeClassName} px-4 py-1 text-lg transition-all inline-block text-center ${className}`}
-      target="_blank"
     >
       {children}
-    </a>
+    </Link>
   );
 }

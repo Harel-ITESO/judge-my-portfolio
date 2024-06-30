@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import HomeContent from "./HomeContent";
-import { PortfolioCardPost } from "../..";
+import { Portfolio } from "../..";
 import axios from "axios";
 import Loader from "../../components/Loader";
 import { useTitle } from "../../utils/TitleHook";
@@ -36,7 +36,7 @@ import { useTitle } from "../../utils/TitleHook";
 // ];
 
 export default function HomePage() {
-  const [portfolios, setPorftolios] = useState<PortfolioCardPost[]>();
+  const [portfolios, setPorftolios] = useState<Portfolio[]>();
   const [hasFetched, setHasFetched] = useState(false);
   useTitle("Home");
   useEffect(() => {

@@ -8,6 +8,8 @@ import AuthRedirect from "./pages/login/AuthRedirect";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import AuthMessage from "./pages/login/AuthMessage";
+import PostPage from "./pages/post/PostPage";
+import CreatePostPage from "./pages/post/CreatePostPage";
 
 export default function App() {
   return (
@@ -21,7 +23,8 @@ export default function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<HomePage />} />
               <Route path="/account" element={<AccountPage />} />
-              <Route />
+              <Route path="/post/:id" element={<PostPage />} />
+              <Route path="/post/create" element={<CreatePostPage />} />
             </Route>
             <Route path="/login" element={<AuthOptions />}></Route>
             <Route path="/login/successful" element={<AuthRedirect />}></Route>

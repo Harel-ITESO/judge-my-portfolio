@@ -9,8 +9,9 @@ export interface Account {
 
 export interface Comment {}
 
-export interface PortfolioCardPost {
+export interface Portfolio {
   postId: string;
+  postName: string;
   createdBy: Account;
   createdOn: string;
   viewCount: number;
@@ -19,4 +20,10 @@ export interface PortfolioCardPost {
   thumbnailImage: string;
   comments: Comment[];
   account: Account;
+}
+
+export interface PortfolioCurrentUser {
+  postId: string;
+  postName: string;
+  thumbnailImage: string;
 }

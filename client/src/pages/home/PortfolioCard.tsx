@@ -1,14 +1,16 @@
-import { PortfolioCardPost } from "../..";
+import { Portfolio } from "../..";
 import Button from "../../components/Button";
 
 export default function PortfolioCard({
+  postId,
   thumbnailImage,
   comments,
   createdBy,
   viewCount,
   webLink,
   repositoryLink,
-}: PortfolioCardPost) {
+  postName,
+}: Portfolio) {
   return (
     <div className="border-2 border-black rounded-lg w-72">
       <div className="h-44">
@@ -21,16 +23,23 @@ export default function PortfolioCard({
       <div className="p-2">
         <div className="text-wrap">
           <div className="flex justify-between items-center">
-            <h4 className="font-bold text-lg capitalize">
-              {"Web dev portfolio"}
-            </h4>
-            <a
-              href={repositoryLink}
-              className="text-3xl text-red-500 transition-all hover:text-red-400"
-              target="_blank"
-            >
-              <span className="fa-brands fa-github"></span>
-            </a>
+            <h4 className="font-bold text-lg capitalize">{postName}</h4>
+            <div className="flex items-center gap-2">
+              <a
+                href={repositoryLink}
+                className="text-2xl text-red-500 transition-all hover:text-red-400"
+                target="_blank"
+              >
+                <span className="fa-brands fa-github"></span>
+              </a>
+              <a
+                className="text-2xl text-red-500 transition-all hover:text-red-400"
+                target="_blank"
+                href={webLink}
+              >
+                <span className="fa-solid fa-link"></span>
+              </a>
+            </div>
           </div>
           <div className="flex justify-between items-center mt-2 text-xs">
             <span className="font-normal text-black">
@@ -56,10 +65,10 @@ export default function PortfolioCard({
         <Button
           className="w-full mt-4 mb-1"
           type="secondary"
-          href={webLink}
+          href={`/post/${postId}`}
           isLink={true}
         >
-          See Portfolio
+          See Post
         </Button>
       </div>
     </div>

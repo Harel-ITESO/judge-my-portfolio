@@ -47,11 +47,11 @@ export function AuthProvider({ children }: Props) {
           "Authorization"
         ] = `Bearer ${tokenFromLs}`;
       })
-      .catch((e) => {
+      .catch(() => {
         setIsAuthenticated(false);
         setToken("");
         setAccount(undefined);
-        console.error(e);
+        localStorage.removeItem("token");
       })
       .finally(() => setIsReady(true));
   }, []);

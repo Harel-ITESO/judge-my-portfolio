@@ -1,6 +1,10 @@
-import { IsNotEmpty, IsUUID, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsUUID, IsUrl, MaxLength } from 'class-validator';
 
 export class CreatePostDto {
+  @IsNotEmpty()
+  @MaxLength(50)
+  postName: string;
+
   @IsNotEmpty()
   @IsUUID()
   createdById: string;

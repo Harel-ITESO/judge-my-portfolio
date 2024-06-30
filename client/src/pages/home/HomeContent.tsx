@@ -1,9 +1,9 @@
-import { PortfolioCardPost } from "../..";
+import { Portfolio } from "../..";
 import PortfolioCard from "./PortfolioCard";
 import swal from "sweetalert2";
 
 interface Props {
-  portfolios?: PortfolioCardPost[];
+  portfolios?: Portfolio[];
 }
 
 export default function HomeContent({ portfolios }: Props) {
@@ -14,12 +14,18 @@ export default function HomeContent({ portfolios }: Props) {
         className=" outline-red-500 outline-dashed w-72 rounded-lg flex items-center justify-center text-red-500 hover:bg-black hover:bg-opacity-15 cursor-pointer"
         style={{ height: 344 }}
         onClick={() => {
-          swal.fire({
-            text: "Do you want to post new a portfolio?",
-            confirmButtonColor: "#ef4444",
-            showCancelButton: true,
-            icon: "question",
-          });
+          swal
+            .fire({
+              text: "Do you want to post new a portfolio?",
+              confirmButtonColor: "#ef4444",
+              showCancelButton: true,
+              icon: "question",
+            })
+            .then((val) => {
+              if (val.isConfirmed) {
+                window.location.replace("/post/create");
+              }
+            });
         }}
       >
         <span className="fa-solid fa-plus"></span>
