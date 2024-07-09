@@ -28,34 +28,23 @@ export class AccountController {
     @Query('posts') posts: string,
     @Query('comments') comments: string,
   ) {
-    try {
-      const postsValue = posts === 'true' || posts === 'True';
-      const commentsValue = comments === 'true' || comments === 'True';
-      const data = await this.service.getAccountById(
-        id,
-        postsValue,
-        commentsValue,
-      );
-      if (!data)
-        throw new NotFoundException('User with given id was not found');
-      return data;
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+    const postsValue = posts === 'true' || posts === 'True';
+    const commentsValue = comments === 'true' || comments === 'True';
+    const data = await this.service.getAccountById(
+      id,
+      postsValue,
+      commentsValue,
+    );
+    if (!data) throw new NotFoundException('User with given id was not found');
+    return data;
   }
 
   // POST /jmp/api/account
   @Post()
   public async createAccount(@Body() body?: CreateAccountDto) {
-    try {
-      if (!body) throw new BadRequestException('Post data was not provided');
-      const created = await this.service.createAccount(body);
-      return created;
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+    if (!body) throw new BadRequestException('Post data was not provided');
+    const created = await this.service.createAccount(body);
+    return created;
   }
 
   // PUT /jmp/api/account
@@ -65,33 +54,23 @@ export class AccountController {
     @Param('id') id: string,
     @Body() body?: UpdateAccountDto,
   ) {
-    try {
-      if (!body || !id)
-        throw new BadRequestException(
-          "Body or id were not provided, can't perform operation ",
-        );
-      const updated = await this.service.updateAccount(id, body);
-      if (!updated)
-        throw new NotFoundException('User with given id was not found');
-      return updated;
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+    if (!body || !id)
+      throw new BadRequestException(
+        "Body or id were not provided, can't perform operation ",
+      );
+    const updated = await this.service.updateAccount(id, body);
+    if (!updated)
+      throw new NotFoundException('User with given id was not found');
+    return updated;
   }
 
   // DELETE /jmp/api/delete
   @Delete(':id')
   @UseGuards(JwtGuard)
   public async deleteAccount(@Param('id') id: string) {
-    try {
-      const deleted = await this.service.deleteAccount(id);
-      if (!deleted)
-        throw new NotFoundException('User with given id was not found');
-      return deleted;
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+    const deleted = await this.service.deleteAccount(id);
+    if (!deleted)
+      throw new NotFoundException('User with given id was not found');
+    return deleted;
   }
 }

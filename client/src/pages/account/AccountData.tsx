@@ -58,7 +58,10 @@ export default function AccountData({ portfolio }: Props) {
       ) : (
         <span className="mt-32 text-center italic">
           Hmm... You still haven't posted something yet.{" "}
-          <Link to="#" className="text-red-500 underline hover:text-red-600">
+          <Link
+            to="/post/create"
+            className="text-red-500 underline hover:text-red-600"
+          >
             Post your portfolio here!
           </Link>
         </span>

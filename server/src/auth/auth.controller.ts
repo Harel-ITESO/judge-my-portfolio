@@ -1,8 +1,17 @@
-import { Controller, Get, Req, Headers, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Headers,
+  Res,
+  UseGuards,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { GoogleGuard } from './guards/google.guard';
 import { GithubGuard } from './guards/github.guard';
 import { ConfigService } from '@nestjs/config';
+import { TokenExpiredError } from '@nestjs/jwt';
 
 @Controller('auth')
 export class AuthController {
@@ -68,10 +77,11 @@ export class AuthController {
   public async validateToken(@Headers('token') token: string) {
     try {
       const data = await this.accountService.validateTokenSignature(token);
+
       return data;
     } catch (e) {
+      if (e instanceof TokenExpiredError) throw new UnauthorizedException();
       console.error(e);
-      return e;
     }
   }
 }

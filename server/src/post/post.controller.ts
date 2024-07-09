@@ -8,10 +8,18 @@ import {
   Body,
   UseGuards,
   Req,
+  UploadedFile,
+  UseInterceptors,
+  ParseFilePipe,
+  FileTypeValidator,
 } from '@nestjs/common';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { extname } from 'path';
 import { PostService } from './post.service';
-import { CreatePostDto } from './dto/create-post.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { BodyPostDto } from './dto/body-post.dto';
+import { Request } from 'express';
 
 @Controller('post')
 export class PostController {
@@ -25,13 +33,8 @@ export class PostController {
   ) {
     const authorValue = author === 'true' || author === 'True';
     const commentsValue = comments === 'true' || comments === 'True';
-    try {
-      const result = await this.service.getPosts(authorValue, commentsValue);
-      return result || [];
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+    const result = await this.service.getPosts(authorValue, commentsValue);
+    return result || [];
   }
 
   // GET /jmp/api/post/current
@@ -74,16 +77,47 @@ export class PostController {
 
   // POST /jmp/api/post
   @UseGuards(JwtGuard)
+  @UseInterceptors(
+    FileInterceptor('thumbnail', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (req, file, cb) => {
+          const randomName = Array(32)
+            .fill(null)
+            .map(() => Math.round(Math.random() * 16).toString(16))
+            .join('');
+          const fileName = `${randomName}${extname(file.originalname)}`;
+          const url = new URL(
+            `${req.protocol}://${req.get('host')}${req.originalUrl}`,
+          );
+          req.headers['imageUrl'] = `${url.origin}/uploads/${fileName}`;
+          cb(null, fileName);
+        },
+      }),
+    }),
+  )
   @Post()
-  public async createPost(@Body() data: CreatePostDto) {
-    try {
-      const created = await this.service.createPost(data);
-      return {
-        created,
-      };
-    } catch (e) {
-      console.error(e);
-      return e;
-    }
+  public async createPost(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({
+            fileType: '.(png|jpeg|jpg)',
+          }),
+        ],
+      }),
+    )
+    thumbnail: Express.Multer.File,
+    @Req() request: Request,
+    @Body() data: BodyPostDto,
+  ) {
+    const { imageUrl } = request.headers;
+    const user = request.user as any;
+    const created = await this.service.createPost({
+      thumbnailImage: imageUrl as string,
+      createdById: user.sub,
+      ...data,
+    });
+    return created;
   }
 }
