@@ -6,12 +6,14 @@ import {
   Param,
   Post,
   Body,
+  Put,
   UseGuards,
   Req,
   UploadedFile,
   UseInterceptors,
   ParseFilePipe,
   FileTypeValidator,
+  BadRequestException,
 } from '@nestjs/common';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -20,6 +22,7 @@ import { PostService } from './post.service';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { BodyPostDto } from './dto/body-post.dto';
 import { Request } from 'express';
+import { isUUID } from 'class-validator';
 
 @Controller('post')
 export class PostController {
@@ -30,10 +33,16 @@ export class PostController {
   public async getAllPosts(
     @Query('author') author: string,
     @Query('comments') comments: string,
+    @Query('orderType') orderType: string,
   ) {
     const authorValue = author === 'true' || author === 'True';
     const commentsValue = comments === 'true' || comments === 'True';
-    const result = await this.service.getPosts(authorValue, commentsValue);
+    const orderTypeValue = parseInt(orderType) || 1;
+    const result = await this.service.getPosts(
+      authorValue,
+      commentsValue,
+      orderTypeValue,
+    );
     return result || [];
   }
 
@@ -65,6 +74,8 @@ export class PostController {
   ) {
     const authorValue = author === 'true' || author === 'True';
     const commentsValue = comments === 'true' || comments === 'True';
+    if (!isUUID(id))
+      throw new BadRequestException('Provided value is not an uuid');
     const result = await this.service.getPostById(
       id,
       authorValue,
@@ -119,5 +130,15 @@ export class PostController {
       ...data,
     });
     return created;
+  }
+
+  // PUT 'jmp/api/post/:id/view'
+  @UseGuards(JwtGuard)
+  @Put(':id/view')
+  public async addViewToPost(@Param('id') id: string) {
+    if (!isUUID(id))
+      throw new BadRequestException('Provided UUID is not valid');
+    const incremented = this.service.incrementView(id);
+    if (!incremented) throw new NotFoundException();
   }
 }

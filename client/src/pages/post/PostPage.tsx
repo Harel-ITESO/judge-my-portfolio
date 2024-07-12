@@ -20,7 +20,10 @@ export default function PostPage() {
       .get(apiUri)
       .then((response) => {
         setPost({ ...response.data });
+        // add a view to the post
+        return axios.put(`${import.meta.env.VITE_API_URI}/post/${id}/view`);
       })
+      .then(() => {})
       .catch((e) => {
         console.error(e);
       })
