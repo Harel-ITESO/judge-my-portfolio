@@ -14,6 +14,8 @@ export default function CreatePostForm() {
   const [thumbnailImage, setThumbnailImage] = useState<File>();
   const [imagePreviewInfo, setImagePreviewInfo] = useState<string[]>();
   const [inputsDisabled, setInputsDisabled] = useState(false);
+  const [description, setDescription] = useState<string>();
+
   const navigate = useNavigate();
 
   const missingAlert = (name: string) => {
@@ -48,12 +50,15 @@ export default function CreatePostForm() {
     if (!postTitle) return missingAlert("Post title");
     if (!webLink) return missingAlert("Web Link");
     if (!repositoryLink) return missingAlert("Repository Link");
+    if (!description) return missingAlert("Description");
     if (!thumbnailImage) return missingAlert("thumbnail image");
+
     const formData = new FormData();
     formData.append("thumbnail", thumbnailImage);
     formData.append("webLink", webLink);
     formData.append("repositoryLink", repositoryLink);
     formData.append("postName", postTitle);
+    formData.append("description", description);
     try {
       setInputsDisabled(true);
       const response = await axios.post(apiUri + "/post", formData);
@@ -113,6 +118,18 @@ export default function CreatePostForm() {
             stateHandler={setRepoLink}
           />
         </div>
+
+        <div className="flex flex-col text-lg gap-1">
+          <label htmlFor="description">Post Description</label>
+          <textarea
+            onChange={(e) => setDescription(e.target.value)}
+            className="bg-gray-200 rounded-lg px-3 py-1 resize-none focus:outline-red-500 outline-none"
+            rows={3}
+            id="description"
+            placeholder="Eg. Hi i'm a junior software developer, i'm new to the industry and i made this portfolio using React and AstroJS"
+          ></textarea>
+        </div>
+
         <ThumbnailImageUploader
           imageUploadHandler={imageUploadHandler}
           imagePreviewInfo={imagePreviewInfo}

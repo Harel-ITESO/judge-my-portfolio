@@ -23,6 +23,7 @@ model Post {
   postId      String  @id @default(uuid()) @db.Uuid
   postName String @db.VarChar(50)
   createdById String  @db.Uuid
+  description String
   createdBy   Account @relation(fields: [createdById], references: [accountId])
   createdOn DateTime @default(now())
   viewCount Int @default(0)

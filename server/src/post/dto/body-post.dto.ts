@@ -10,6 +10,10 @@ export class BodyPostDto {
   repositoryLink: string;
 
   @IsNotEmpty()
+  @MaxLength(200)
+  description: string;
+
+  @IsNotEmpty()
   @IsUrl()
   webLink: string;
 }

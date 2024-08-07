@@ -14,6 +14,10 @@ export class CreatePostDto {
   repositoryLink: string;
 
   @IsNotEmpty()
+  @MaxLength(200)
+  description: string;
+
+  @IsNotEmpty()
   @IsUrl()
   webLink: string;
 

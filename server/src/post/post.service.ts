@@ -64,13 +64,19 @@ export class PostService {
     return data;
   }
 
-  public async createPost(postData: CreatePostDto) {
-    const { createdById, repositoryLink, webLink, thumbnailImage, postName } =
-      postData;
+  public async createPost({
+    createdById,
+    repositoryLink,
+    webLink,
+    thumbnailImage,
+    postName,
+    description,
+  }: CreatePostDto) {
     const created = await this.prismaService.post.create({
       data: {
         postName,
         repositoryLink,
+        description,
         webLink,
         thumbnailImage,
         createdBy: {
