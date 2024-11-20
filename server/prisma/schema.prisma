@@ -1,3 +1,8 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
   provider = "prisma-client-js"
@@ -8,36 +13,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Account {
-  accountId String   @id @default(uuid()) @db.Uuid
-  email String
-  serviceProvider String
-  username  String
-  imageUrl  String?
-  createdOn DateTime @default(now())
-  posts      Post[]
-  comments Comment[] 
+model User {
+  userId                 Int      @id @default(autoincrement()) @map("user_id")
+  email                  String   @unique // unique email 
+  username               String   @unique // unique username
+  authenticationProvider String   @map("authentication_provider") // 'google' | 'github' | 'local'
+  createdOn              DateTime @default(now()) @map("created_on")
+  password               String? // optional since provider might not be 'local'
+  profilePicUrl          String?  @map("profile_pic_url")
+  posts                  Post[]
 }
 
 model Post {
-  postId      String  @id @default(uuid()) @db.Uuid
-  postName String @db.VarChar(50)
-  createdById String  @db.Uuid
-  description String
-  createdBy   Account @relation(fields: [createdById], references: [accountId])
-  createdOn DateTime @default(now())
-  viewCount Int @default(0)
-  repositoryLink String
-  webLink String
-  thumbnailImage String
-  comments Comment[] 
-}
+  postId         Int    @id @default(autoincrement()) @map("post_id")
+  postName       String @map("post_name")
+  description    String
+  repositoryLink String @map("repository_link")
+  browserLink    String @map("browser_link")
+  thumbnailImage String @map("thumbnail_image")
+  viewCount      Int    @default(0)
 
-model Comment {
-  commentId String @id @default(uuid()) @db.Uuid
-  createdById String  @db.Uuid
-  createdBy   Account @relation(fields: [createdById], references: [accountId])
-  postId String @db.Uuid
-  postedOn Post @relation(fields: [postId], references: [postId])
-  textContent String
+  // relation to User
+  createdById Int      @map("created_by_id")
+  createdBy   User     @relation(fields: [createdById], references: [userId])
+  createdAt   DateTime @default(now()) @map("created_at")
 }

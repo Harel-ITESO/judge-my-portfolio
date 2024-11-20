@@ -1,28 +1,26 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+
+import { UsersModule } from './modules/users/users.module';
+import { AuthenticationModule } from './modules/authentication/authentication.module';
+import { PrismaService } from './services/prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
-import { AccountModule } from './account/account.module';
-import { PostModule } from './post/post.module';
-import { AuthModule } from './auth/auth.module';
+import { PostsModule } from './modules/posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UploadService } from './services/upload/upload.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-    }),
+    UsersModule,
+    AuthenticationModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
-      serveRoot: '/uploads/',
+      serveRoot: '/uploads',
     }),
-    AccountModule,
-    PostModule,
-    AuthModule,
-    ConfigModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    PostsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [PrismaService, UploadService],
 })
 export class AppModule {}
