@@ -13,7 +13,7 @@ const {
   browserLink,
   createdBy,
   viewCount,
-  totalRating,
+  averageRating,
 } = props.post
 </script>
 <template>
@@ -46,14 +46,14 @@ const {
       <div class="divider"></div>
       <div class="flex justify-between">
         <small class="text-sm flex flex-col"
-          ><strong class="text-neutral-500">Created By: </strong> {{ createdBy.username }}</small
+          ><strong class="text-neutral-500">Created By: </strong> {{ createdBy }}</small
         >
         <div class="flex flex-col">
           <small class="text-sm text-neutral-500"
             ><i class="fa-solid fa-eye"></i> {{ viewCount }}</small
           >
           <small class="text-sm text-neutral-500"
-            ><i class="fa-solid fa-star"></i> {{ totalRating || 4.5 }}</small
+            ><i class="fa-solid fa-star"></i> {{ averageRating }}</small
           >
         </div>
       </div>

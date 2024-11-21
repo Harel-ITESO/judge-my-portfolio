@@ -8,6 +8,7 @@ import { PostsModule } from './modules/posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UploadService } from './services/upload/upload.service';
+import { RatingsModule } from './modules/ratings/ratings.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UploadService } from './services/upload/upload.service';
     }),
     ConfigModule.forRoot({ isGlobal: true }),
     PostsModule,
+    RatingsModule,
   ],
   controllers: [],
   providers: [PrismaService, UploadService],

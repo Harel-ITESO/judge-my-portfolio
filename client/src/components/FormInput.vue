@@ -9,9 +9,9 @@ const props = defineProps<{
   errorMessage?: string
   placeholder?: string
   modelValue: string
-  textarea?: boolean
   maxLength?: number
   disabled?: boolean
+  type?: 'text' | 'password' | 'email' | 'number' | 'textarea'
 }>()
 
 const showTitle = computed(() => props.titleLeft || props.titleRight)
@@ -37,7 +37,7 @@ function onInput(event: Event) {
       <textarea
         :disabled="disabled"
         :maxlength="maxLength"
-        v-if="textarea"
+        v-if="type === 'textarea'"
         class="textarea h-24 bg-neutral-200 resize-none"
         :value="modelValue"
         @input="onInput"
@@ -46,8 +46,8 @@ function onInput(event: Event) {
       <input
         :disabled="disabled"
         v-else
+        :type="type"
         :maxlength="maxLength"
-        type="text"
         :placeholder="placeholder"
         :value="modelValue"
         @input="onInput"
@@ -58,7 +58,7 @@ function onInput(event: Event) {
     <template v-else>
       <textarea
         :disabled="disabled"
-        v-if="textarea"
+        v-if="type === 'textarea'"
         :maxlength="maxLength"
         class="textarea h-24 bg-neutral-200 resize-none"
         :value="modelValue"
@@ -67,7 +67,7 @@ function onInput(event: Event) {
       ></textarea>
       <input
         v-else
-        type="text"
+        :type="type"
         :disabled="disabled"
         :maxlength="maxLength"
         :placeholder="placeholder"
@@ -78,7 +78,7 @@ function onInput(event: Event) {
     </template>
 
     <div v-if="errorMessage" class="label">
-      <span class="label-text-alt">{{ errorMessage }}</span>
+      <span class="label-text-alt text-red-600">{{ errorMessage }}</span>
     </div>
   </label>
 </template>

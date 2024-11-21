@@ -17,14 +17,10 @@ import { User } from '@prisma/client';
 import { JwtGuard } from 'src/guards/jwt.guard';
 import { CreatePostDto } from './dto/create-post.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadService } from 'src/services/upload/upload.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(
-    private readonly postsService: PostsService,
-    private readonly uploadService: UploadService,
-  ) {}
+  constructor(private readonly postsService: PostsService) {}
 
   @Post('')
   // POST - /api/jmp/posts

@@ -4,6 +4,7 @@ import FormBox from './components/FormBox.vue'
 import { useAppStore } from '@/stores/app'
 import router from '@/router'
 import axios, { AxiosError } from 'axios'
+import FormInput from '@/components/FormInput.vue'
 
 const email = ref('')
 const password = ref('')
@@ -14,13 +15,26 @@ const errorMessage = ref('')
 const url = useAppStore().apiUrl + '/authentication/register'
 // computed
 
-const canSendRequest = computed(() => {
+const passwordIsStrong = computed(() => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/
+  return regex.test(password.value)
+})
+
+const passwordsAreCorrect = computed(() => {
+  return password.value === doubleCheckPassword.value
+})
+
+const valuesAreNotEmpty = computed(() => {
   return (
     email.value !== '' &&
     password.value !== '' &&
     doubleCheckPassword.value !== '' &&
     username.value !== ''
   )
+})
+
+const canSendRequest = computed(() => {
+  return valuesAreNotEmpty.value && passwordIsStrong.value && passwordsAreCorrect.value
 })
 
 /**
@@ -80,36 +94,33 @@ async function registerUser() {
     <form class="mt-3 flex flex-col gap-4" @submit.prevent="registerUser">
       <div class="flex gap-4">
         <!-- Username -->
-        <label class="input flex items-center gap-2 bg-neutral-200 placeholder:text-black">
-          <i class="fa-solid fa-user opacity-55"></i>
-          <input type="text" placeholder="Username" v-model="username" />
-        </label>
+        <FormInput icon="fa-solid fa-user" v-model="username" placeholder="Username" />
 
         <!-- Email -->
-        <label class="input flex items-center gap-2 bg-neutral-200 placeholder:text-black">
-          <i class="fa-solid fa-envelope opacity-55"></i>
-          <input type="email" placeholder="Email" v-model="email" />
-        </label>
+        <FormInput icon="fa-solid fa-envelope" v-model="email" placeholder="Email" type="email" />
       </div>
 
       <!-- Password -->
-      <label
-        class="form-control input w-full max-w-s flex flex-row items-center gap-2 bg-neutral-200 placeholder:text-black"
-      >
-        <i class="fa-solid fa-lock opacity-55"></i>
-        <input
-          type="password"
-          placeholder="Password (At least 8 letters, one upper, one lower and a number)"
-          v-model="password"
-          class="w-full"
-        />
-      </label>
+      <FormInput
+        icon="fa-solid fa-lock"
+        v-model="password"
+        placeholder="Password (At least 8 letters, one upper, one lower and a number)"
+        :error-message="
+          password && !passwordIsStrong
+            ? 'Password is not strong enough (At least 8 letters, one lowercase letter and one uppercase)'
+            : ''
+        "
+        type="password"
+      />
 
       <!-- Double Check Password -->
-      <label class="input flex items-center gap-2 bg-neutral-200 placeholder:text-black">
-        <i class="fa-solid fa-lock opacity-55"></i>
-        <input type="password" placeholder="Repeat password" v-model="doubleCheckPassword" />
-      </label>
+      <FormInput
+        icon="fa-solid fa-lock"
+        v-model="doubleCheckPassword"
+        placeholder="Repeat Password"
+        type="password"
+        :error-message="doubleCheckPassword && !passwordsAreCorrect ? 'Passwords do not match' : ''"
+      />
 
       <button
         type="submit"

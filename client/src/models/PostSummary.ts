@@ -3,8 +3,8 @@ export interface PostSummary {
   postName: string
   repositoryLink: string
   browserLink: string
-  totalRating: number
+  averageRating: number
   viewCount: number
   thumbnailImage: string
-  createdBy: { username: string }
+  createdBy: string
 }

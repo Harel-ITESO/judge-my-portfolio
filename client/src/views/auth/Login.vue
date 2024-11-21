@@ -4,6 +4,7 @@ import { useAppStore } from '@/stores/app'
 import FormBox from './components/FormBox.vue'
 import router from '@/router'
 import axios, { AxiosError } from 'axios'
+import FormInput from '@/components/FormInput.vue'
 
 type EmailOrUsername = { email: string; password: string } | { username: string; password: string }
 
@@ -74,24 +75,21 @@ async function sendLogin() {
   <FormBox>
     <h2 class="text-center text-2xl">Login</h2>
     <form class="mt-3 flex flex-col gap-4" @submit.prevent="sendLogin">
-      <label class="input flex items-center gap-2 bg-neutral-200 placeholder:text-black">
-        <i class="fa-solid fa-user opacity-55"></i>
-        <input
-          type="text"
-          placeholder="User or Email"
-          v-model="emailOrUsername"
-          :disabled="isMakingRequest"
-        />
-      </label>
-      <label class="input flex items-center gap-2 bg-neutral-200 placeholder:text-black">
-        <i class="fa-solid fa-lock opacity-55"></i>
-        <input
-          type="password"
-          placeholder="Password"
-          v-model="password"
-          :disabled="isMakingRequest"
-        />
-      </label>
+      <FormInput
+        icon="fa-solid fa-user"
+        v-model="emailOrUsername"
+        type="text"
+        placeholder="Email or Username"
+        :disabled="isMakingRequest"
+      />
+
+      <FormInput
+        v-model="password"
+        type="password"
+        placeholder="Password"
+        :disabled="isMakingRequest"
+        icon="fa-solid fa-lock"
+      />
 
       <button
         :disabled="emailOrUsername === '' || password === '' || isMakingRequest"

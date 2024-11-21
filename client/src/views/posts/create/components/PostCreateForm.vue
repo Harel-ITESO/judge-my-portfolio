@@ -108,7 +108,7 @@ async function handleSubmit() {
     </div>
     <FormInput
       v-model="description"
-      :textarea="true"
+      type="textarea"
       title-left="Description"
       placeholder="Description of the portfolio"
       :max-length="255"

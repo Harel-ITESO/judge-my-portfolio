@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["typedSql"]
 }
 
 datasource db {
@@ -22,6 +23,7 @@ model User {
   password               String? // optional since provider might not be 'local'
   profilePicUrl          String?  @map("profile_pic_url")
   posts                  Post[]
+  ratings                Rating[]
 }
 
 model Post {
@@ -31,10 +33,23 @@ model Post {
   repositoryLink String @map("repository_link")
   browserLink    String @map("browser_link")
   thumbnailImage String @map("thumbnail_image")
-  viewCount      Int    @default(0)
+  viewCount      Int    @default(0) @map("view_count")
 
   // relation to User
   createdById Int      @map("created_by_id")
   createdBy   User     @relation(fields: [createdById], references: [userId])
   createdAt   DateTime @default(now()) @map("created_at")
+  ratings     Rating[]
+}
+
+model Rating {
+  ratingId  Int     @id @default(autoincrement()) @map("rating_id")
+  stars     Int // can be 1 or 5
+  postId    Int     @map("post_id")
+  post      Post    @relation(fields: [postId], references: [postId])
+  ratedById Int     @map("rated_by_id")
+  ratedBy   User    @relation(fields: [ratedById], references: [userId])
+  comment   String? // optional, if provided it shall be displayed
+
+  @@unique([postId, ratedById]) // a user can provide rating only once per post
 }
