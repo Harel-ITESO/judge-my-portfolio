@@ -26,7 +26,7 @@ const {
       />
     </figure>
     <div class="card-body">
-      <div class="flex justify-between">
+      <div class="flex justify-between gap-2">
         <h2 class="card-title">{{ postName }}</h2>
         <div class="flex gap-3 text-xl">
           <a

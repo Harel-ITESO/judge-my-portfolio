@@ -17,6 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import { LocalRegisterDto } from './dto/local-register.dto';
 import { GoogleGuard } from 'src/guards/google.guard';
 import { ThirdPartyAuthDto } from './dto/third-party-auth.dto';
+import { GithubGuard } from 'src/guards/github.guard';
 
 @Controller('authentication')
 export class AuthenticationController {
@@ -87,7 +88,6 @@ export class AuthenticationController {
   @Get('validate')
   // GET - api/jmp/authentication/validate
   public async validateToken(@Req() req: Request) {
-    console.log(req.signedCookies, req.cookies);
     const token = req.signedCookies['authentication'];
     const data = await this.authenticationService.validate(token || '');
     if (!data.valid) throw new UnauthorizedException('Token is invalid');
@@ -115,10 +115,30 @@ export class AuthenticationController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const user = req.user as any;
-    console.log(user);
     const data = new ThirdPartyAuthDto();
     data.username = user.displayName.split(' ').join('.').toLowerCase();
     data.authenticationProvider = 'google';
+    data.email = user.emails[0].value;
+    const token = await this.authenticationService.thirdPartyAuthenticate(data);
+    this.setCookie(res, token);
+  }
+
+  @Get('github')
+  // GET - api/jmp/authentication/github
+  @UseGuards(GithubGuard)
+  public async githubLogin() {}
+
+  @Get('github/redirect')
+  @UseGuards(GithubGuard)
+  @Redirect(process.env.CLIENT_URL, 302)
+  public async githubRedirect(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = req.user as any;
+    const data = new ThirdPartyAuthDto();
+    data.username = user.username;
+    data.authenticationProvider = 'github';
     data.email = user.emails[0].value;
     const token = await this.authenticationService.thirdPartyAuthenticate(data);
     this.setCookie(res, token);

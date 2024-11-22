@@ -16,6 +16,7 @@ const password = ref('')
 const { apiUrl } = useAppStore()
 const url = apiUrl + '/authentication/login'
 const googleAuthUrl = apiUrl + '/authentication/google'
+const githubAuthUrl = apiUrl + '/authentication/github'
 
 const showErrorAfterBadRequest = ref(false)
 const errorMessage = ref('')
@@ -114,7 +115,7 @@ async function sendLogin() {
           ><i class="fa-brands fa-google"></i>Google</a
         >
         <a
-          href="/"
+          :href="githubAuthUrl"
           class="btn flex-grow bg-white rounded-full bordered border-primary border-opacity-40 text-primary hover:btn-primary hover:text-white"
           ><i class="fa-brands fa-github"></i>Github</a
         >
