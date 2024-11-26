@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma, User } from '@prisma/client';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { CreateUserLocalDto } from './dto/create-user-local.dto';
 import { hashPassword } from 'src/utils/hash-password';
 import { CreateThirdPartyUserDto } from './dto/create-third-party-user.dto';
 import { generateAvatar } from 'src/utils/avatar-generator';
+import { PostsService } from '../posts/posts.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly postsService: PostsService,
+  ) {}
 
   /**
    * Creates a new user using a local strategy
@@ -65,6 +69,20 @@ export class UsersService {
     const user = await this.prismaService.user.findUnique({ where });
     if (!user) return null;
     return filterPassword ? this.filterPasswordFromuser(user) : user;
+  }
+
+  public async getUserWithSummary(username: string) {
+    const user = await this.prismaService.user.findUnique({
+      where: { username },
+    });
+    if (!user) throw new NotFoundException('User was not found');
+
+    const postsByUser = await this.postsService.getPostsSummary(
+      'recent',
+      user.userId,
+    );
+
+    return { ...this.filterPasswordFromuser(user), posts: [...postsByUser] };
   }
 
   /**

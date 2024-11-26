@@ -100,7 +100,6 @@ export class AuthenticationService {
       const payload = (await this.jwtService.verifyAsync(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       })) as JwtPayload;
-      console.log(payload);
       return {
         valid: true,
         userInformation: {
