@@ -3,7 +3,7 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore('app-store', {
   state: () => {
     return {
-      apiUrl: 'http://localhost:5034/api/jmp',
+      apiUrl: import.meta.env.VITE_API_URL as string,
     }
   },
   actions: {},
