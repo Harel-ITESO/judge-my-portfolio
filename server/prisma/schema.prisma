@@ -37,7 +37,7 @@ model Post {
 
   // relation to User
   createdById Int      @map("created_by_id")
-  createdBy   User     @relation(fields: [createdById], references: [userId])
+  createdBy   User     @relation(fields: [createdById], references: [userId], onDelete: Cascade)
   createdAt   DateTime @default(now()) @map("created_at")
   ratings     Rating[]
 }
@@ -46,9 +46,9 @@ model Rating {
   ratingId  Int     @id @default(autoincrement()) @map("rating_id")
   stars     Int // can be 1 or 5
   postId    Int     @map("post_id")
-  post      Post    @relation(fields: [postId], references: [postId])
+  post      Post    @relation(fields: [postId], references: [postId], onDelete: Cascade)
   ratedById Int     @map("rated_by_id")
-  ratedBy   User    @relation(fields: [ratedById], references: [userId])
+  ratedBy   User    @relation(fields: [ratedById], references: [userId], onDelete: Cascade)
   comment   String? // optional, if provided it shall be displayed
 
   @@unique([postId, ratedById]) // a user can provide rating only once per post

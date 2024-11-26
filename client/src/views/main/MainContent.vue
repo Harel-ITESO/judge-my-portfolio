@@ -25,9 +25,10 @@ function onAddPostClick() {
   <div class="grid lg:grid-cols-5 p-10 gap-8">
     <button
       @click="onAddPostClick"
-      class="border-2 border-primary rounded-xl border-dashed transition-all hover:bg-black hover:bg-opacity-25"
+      class="border-2 p-4 sm:p-0 border-primary rounded-xl sm:border-dashed transition-all sm:hover:bg-black sm:hover:bg-opacity-25 hover:bg-red-600 sm:bg-white bg-primary"
+      :class="posts.length === 0 ? 'col-span-5 sm:h-[15rem]' : 'col-span-1'"
     >
-      <i class="fa-solid fa-plus text-primary"></i>
+      <span class="sm:text-primary text-white">Create a post</span>
     </button>
     <PostCard v-for="(post, index) in posts" :key="index" :post="post" />
   </div>

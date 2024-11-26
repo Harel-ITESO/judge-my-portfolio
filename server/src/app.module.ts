@@ -7,7 +7,7 @@ import { ConfigModule } from '@nestjs/config';
 import { PostsModule } from './modules/posts/posts.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
-import { UploadService } from './services/upload/upload.service';
+import { BucketSerivce } from './services/upload/upload.service';
 import { RatingsModule } from './modules/ratings/ratings.module';
 
 @Module({
@@ -23,6 +23,6 @@ import { RatingsModule } from './modules/ratings/ratings.module';
     RatingsModule,
   ],
   controllers: [],
-  providers: [PrismaService, UploadService],
+  providers: [PrismaService, BucketSerivce],
 })
 export class AppModule {}
