@@ -120,6 +120,7 @@ export class AuthenticationController {
     data.authenticationProvider = 'google';
     data.email = user.emails[0].value;
     const token = await this.authenticationService.thirdPartyAuthenticate(data);
+    console.log(token);
     this.setCookie(res, token);
   }
 
