@@ -9,6 +9,10 @@
     }
   ],
   "compilerOptions": {
-    "types": ["vue-sweetalert2"]
+    "types": ["vue-sweetalert2"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }
