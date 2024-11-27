@@ -5,10 +5,18 @@ import Register from '@/views/auth/RegisterView.vue'
 import { useAuthStore } from '@/stores/auth'
 import UserView from '@/views/user/UserView.vue'
 import PostCreateView from '@/views/posts/create/PostCreateView.vue'
+import PostsDetailView from '@/views/posts/detail/PostDetailView.vue'
+import NotFoundView from '@/views/not-found/NotFoundView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    {
+      path: '/not-found',
+      meta: { layout: 'main', requiresAuth: false },
+      component: NotFoundView,
+    },
+
     {
       path: '/',
       name: 'Main page',
@@ -38,6 +46,10 @@ const router = createRouter({
           path: 'create',
           component: PostCreateView,
         },
+        {
+          path: ':id/detail',
+          component: PostsDetailView,
+        },
       ],
     },
 
@@ -61,7 +73,7 @@ const router = createRouter({
     /** Default redirect if route doesn't exist */
     {
       path: '/:pathMatch(.*)*',
-      redirect: '/',
+      redirect: '/not-found',
     },
   ],
 })

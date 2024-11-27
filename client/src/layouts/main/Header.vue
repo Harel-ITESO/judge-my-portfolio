@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { useAuthStore } from '@/stores/auth'
 const { isAuthenticated, userInformation, logOut } = useAuthStore()

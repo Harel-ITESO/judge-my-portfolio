@@ -1,10 +1,14 @@
 import {
   Body,
   Controller,
+  Delete,
   FileTypeValidator,
+  ForbiddenException,
   Get,
+  Param,
   ParseFilePipe,
   Post,
+  Put,
   Query,
   Req,
   UploadedFile,
@@ -58,5 +62,30 @@ export class PostsController {
   ) {
     const data = await this.postsService.getPostsSummary(orderBy);
     return data;
+  }
+
+  // GET - /api/jmp/posts/:id/detail
+  @Get(':id/detail')
+  @UseGuards(JwtGuard)
+  public async getPostCompleteDetail(@Param('id') id: number) {
+    return await this.postsService.getPostByIdWithCommentRatings(id);
+  }
+
+  // PUT - /api/jmp/posts/:id/add-view
+  @Put(':id/add-view')
+  public async addViewToPost(@Param('id') id: number) {
+    return await this.postsService.addView(id);
+  }
+
+  // DELETE - /api/jmp/posts/:id
+  @Delete(':id')
+  @UseGuards(JwtGuard)
+  public async deletePost(@Param('id') id: number, @Req() req: Request) {
+    const user = req.user as User;
+    const postExisting = await this.postsService.getPostById(id);
+    if (postExisting.createdById !== user.userId)
+      throw new ForbiddenException('You are not allowed to delete this post');
+    await this.postsService.deletePost(id);
+    return { deleted: true };
   }
 }

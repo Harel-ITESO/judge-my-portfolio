@@ -1,10 +1,14 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { PrismaService } from 'src/services/prisma/prisma.service';
+import { PostsService } from '../posts/posts.service';
 
 @Injectable()
 export class RatingsService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly postsSerivce: PostsService,
+  ) {}
 
   /**
    * Creates a new rating
@@ -18,7 +22,11 @@ export class RatingsService {
     postId: number,
     data: CreateRatingDto,
   ) {
-    const createdRating = await this.prismaService.rating.create({
+    const post = await this.postsSerivce.getPostById(postId);
+    // ensure the user is not rating their own post
+    if (post.createdById === ratedById)
+      throw new BadRequestException("You can't rate your own post");
+    const { ratingId } = await this.prismaService.rating.create({
       data: {
         ...data,
         ratedBy: {
@@ -33,7 +41,21 @@ export class RatingsService {
         },
       },
     });
-    return createdRating;
+    return await this.prismaService.rating.findFirst({
+      select: {
+        stars: true,
+        comment: true,
+        ratedBy: {
+          select: {
+            username: true,
+            profilePicUrl: true,
+          },
+        },
+      },
+      where: {
+        ratingId,
+      },
+    });
   }
 
   /**

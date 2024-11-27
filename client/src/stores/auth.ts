@@ -16,7 +16,19 @@ export const useAuthStore = defineStore('auth-store', () => {
   const validateSession = async () => {
     try {
       const response = await axios.get<{ valid: boolean; userInformation: UserInformation }>(url)
-      if (userInformation.value !== null) return { valid: true } // If userInformation is already set, don't overwrite it
+      if (userInformation.value !== null) {
+        // check if any user information has changed
+        // if so, replace the user information
+        for (const key in response.data.userInformation) {
+          if (
+            response.data.userInformation[key as keyof UserInformation] !==
+            userInformation.value[key as keyof UserInformation]
+          ) {
+            userInformation.value = { ...response.data.userInformation }
+            return { valid: true }
+          }
+        }
+      }
       userInformation.value = { ...response.data.userInformation }
       return { valid: true }
     } catch {

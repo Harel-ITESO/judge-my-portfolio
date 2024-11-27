@@ -58,7 +58,9 @@ const {
         </div>
       </div>
       <div class="card-actions w-full mt-4">
-        <RouterLink to="/" class="btn btn-primary w-full text-white">Go to post</RouterLink>
+        <RouterLink :to="`/posts/${postId}/detail`" class="btn btn-primary w-full text-white"
+          >Go to post</RouterLink
+        >
       </div>
     </div>
   </div>
